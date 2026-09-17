@@ -1,34 +1,46 @@
-'''
- Sistema Experto para el guiado de un robot
- Esta clase contendrá el código creado por los alumnos de RyRDC para el control 
- y guiado de un robot móvil sobre un plano cartesiano
-
- Creado por: Diego Viejo
- el 11/09/2026
-
-
-'''
+#ARCHIVO PARA TRABAJAR CON LA PRACTICA. 
 
 from objetivo import *
 
 class ExpertSystem:
     def __init__(self) -> None:
         self.objetivoActual = None
-        self.nombreAlumno = "Kacper Piklowski" #IMPORTANTE: Cambia el valor de esta propiedad por tu nombre completo
+        self.nombreAlumno = "Kacper Marcin Piklowski"
 
-    # función setObjetivo
-    #   Almacena en la propiedad objetivoActual el objetivo al que tiene que moverse el robot
+    #=====================================================
+
+    '''
+    Este metodo se puede modificar incluyendo cualquier cambio que se considere conveniente.
+    '''
+
     def setObjetivo(self, objetivo):
         self.objetivoActual = objetivo
 
+    #=====================================================
 
-    # función tomarDecision. 
-    #   Recibe una tupla de 3 valores con la pose del robot: posición X, posición Y, orientación
-    #   
-    #   Devuelve una tupla con la velocidad lineal y angular que se
-    #   quiere dar al robot
+    '''
+    Este es el metodo que principalmente se tienen que crear las reglas. 
+    '''
+
     def tomarDecision(self, poseRobot):
-        # código del sistema experto. A completar por la alumna o alumno
+
+        '''
+        Obtenemos las coordenadas actuales del robot a base de poseRobot que viene dada como parametro.
+        '''
+
+        x_robot = poseRobot[0]
+        y_robot = poseRobot[1]
+        angulo_robot = poseRobot[2]
+
+        '''
+        Tenemos que ver que tipo de objetivo es (segmento/triangulo). Segun el archivo objetivo.py, vemos que podemos saber que tipo es usando el metodo especifico para ello. 
+        '''
+
+
+
+        '''
+        Se tiene que devolver una tupla que tenga (velocidad lineal, velocidad angular).
+        '''
 
         return (3, 0.25)
     
