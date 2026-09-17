@@ -14,7 +14,7 @@ from objetivo import *
 class ExpertSystem:
     def __init__(self) -> None:
         self.objetivoActual = None
-        self.nombreAlumno = "Invalido" #IMPORTANTE: Cambia el valor de esta propiedad por tu nombre completo
+        self.nombreAlumno = "Kacper Piklowski" #IMPORTANTE: Cambia el valor de esta propiedad por tu nombre completo
 
     # función setObjetivo
     #   Almacena en la propiedad objetivoActual el objetivo al que tiene que moverse el robot

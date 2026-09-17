@@ -1,0 +1,3 @@
+- explicacion de las reglas que hemos implementado. 
+- incluir fotos del codigo. 
+- buenas justificaciones. 
