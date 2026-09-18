@@ -26,7 +26,7 @@ useFuzzySystem = False
 # pygame setup
 pygame.init()
 sizeY = 720 #Necesario para adaptar las coordenadas del entorno a las de la pantalla de pygame
-screen = pygame.display.set_mode((1024, sizeY))
+screen = pygame.display.set_mode((1024, sizeY), pygame.SCALED | pygame.RESIZABLE) #linea modificada
 clock = pygame.time.Clock()
 running = True
 programQuit = False

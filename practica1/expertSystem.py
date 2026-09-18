@@ -1,47 +1,87 @@
 #ARCHIVO PARA TRABAJAR CON LA PRACTICA. 
 
 from objetivo import *
+import math
 
 class ExpertSystem:
     def __init__(self) -> None:
         self.objetivoActual = None
         self.nombreAlumno = "Kacper Marcin Piklowski"
 
-    #=====================================================
+        #implementamos fase para saber en que fase del objetivo estamos y el umbral para saber si el objetivo esta alcanzado.
+        self.umbral = 0.2
+        self.fase = 1
 
-    '''
-    Este metodo se puede modificar incluyendo cualquier cambio que se considere conveniente.
-    '''
+
+    #============================================================================
+
 
     def setObjetivo(self, objetivo):
         self.objetivoActual = objetivo
 
-    #=====================================================
+    #============================================================================
 
-    '''
-    Este es el metodo que principalmente se tienen que crear las reglas. 
-    '''
 
     def tomarDecision(self, poseRobot):
 
+        v_lineal=0.0
+        v_angular=0.0
+        
         '''
-        Obtenemos las coordenadas actuales del robot a base de poseRobot que viene dada como parametro.
+        obtenemos la posicion y el angulo actuales del robot.
         '''
 
+        #obtenemos los datos del robot en el instante en el que vamos a tomar la decision. 
         x_robot = poseRobot[0]
         y_robot = poseRobot[1]
         angulo_robot = poseRobot[2]
 
-        '''
-        Tenemos que ver que tipo de objetivo es (segmento/triangulo). Segun el archivo objetivo.py, vemos que podemos saber que tipo es usando el metodo especifico para ello. 
-        '''
-
-
+        #----------------------------------------------------------------------------------------
 
         '''
-        Se tiene que devolver una tupla que tenga (velocidad lineal, velocidad angular).
+        obtenemos el tipo de objetivo con el que se enfrenta el robot. 
+        '''
+        if self.objetivoActual.getType() == 1 and self.fase==1:
+            x_objetivo, y_objetivo = self.objetivoActual.getInicio()
+        elif self.objetivoActual.getType() == 1 and self.fase==2:
+            x_objetivo, y_objetivo = self.objetivoActual.getFin()
+
+        #----------------------------------------------------------------------------------------
+
+        '''
+        calculamos la distancia que le falta al robot para saber que direccion debe tomar el robot.
+        ''' 
+
+        vector_distancia = (x_objetivo - x_robot,y_objetivo - y_robot)
+        distancia = math.sqrt(vector_distancia[0]**2 + vector_distancia[1]**2)
+
+        '''
+        calculamos el angulo de referencia porque es angulo deseado que debe tomar el robot para alcanzar el objetivo. Es la direccion de la linea recta que conecta el robot y su objetivo.
         '''
 
-        return (3, 0.25)
-    
+        angulo_referencia = math.atan2(vector_distancia[1], vector_distancia[0])
+            #usamos atan2 porque es una funcion matematica equivalente a arcotangente, pero calcula automaticamente en que cuadrante esta situado el objetivo y facilita situar el robot en la direccion correcta.
 
+        '''
+        calculamos el la diferencia de angulos para que el robot sepa como girarse para alcanzar el objetivo.
+        '''
+
+        dif_angulo = angulo_referencia - angulo_robot
+        error_angulo = math.atan2(math.sin(dif_angulo), math.cos(dif_angulo))
+        margen = 0.08
+
+        #----------------------------------------------------------------------------------------
+
+        #=========================
+        #REGLAS DE ESTADO. 
+        #=========================
+
+
+        #=========================
+        #REGLAS DE CONTROL (VELOCIDADES). 
+        #=========================
+        
+
+        #tenemos que devolover la tupla con las velocidades que queremos que tome el robot. 
+        return (v_lineal, v_angular)
+        #return (1,0.5)
