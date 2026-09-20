@@ -1,4 +1,4 @@
-#ARCHIVO PARA TRABAJAR CON LA PRACTICA. 
+#ARCHIVO COPIA DE SEGURIDAD CON EL CODIGO FUNCIONAL SUFICIENTE PARA APROBAR.  
 
 from objetivo import *
 import math
@@ -10,6 +10,7 @@ class ExpertSystem:
 
         #implementamos fase para saber en que fase del objetivo estamos y el umbral para saber si el objetivo esta alcanzado.
         self.umbral = 0.2
+        self.fase = 1
         self.cola_puntos=[]
 
 
@@ -25,10 +26,9 @@ class ExpertSystem:
             self.lista_puntos.append(objetivo.getInicio())
             self.lista_puntos.append(objetivo.getFin())
         else:
-            pass
-            #self.lista_puntos.append(objetivo.getInicio())
-            #self.lista_puntos.append(objetivo.getMedio())
-            #self.lista_puntos.append(objetivo.getFin())
+            self.lista_puntos.append(objetivo.getInicio())
+            self.lista_puntos.append(objetivo.getMedio())
+            self.lista_puntos.append(objetivo.getFin())
 
 
     #============================================================================
@@ -38,6 +38,9 @@ class ExpertSystem:
 
         if not hasattr(self, 'lista_puntos') or not self.lista_puntos:
             return (0.0, 0.0)
+
+        v_lineal=0.0
+        v_angular=0.0
 
         #----------------------------------------------------------------------------------------
 
@@ -68,6 +71,7 @@ class ExpertSystem:
         #calculamos el la diferencia de angulos para que el robot sepa como girarse para alcanzar el objetivo.
         dif_angulo = angulo_referencia - angulo_robot
         error_angulo = math.atan2(math.sin(dif_angulo), math.cos(dif_angulo))
+        margen = 0.1
 
         #----------------------------------------------------------------------------------------
 
@@ -84,28 +88,16 @@ class ExpertSystem:
         #REGLAS DE CONTROL (VELOCIDADES). 
         #=========================
         
-        if abs(error_angulo) < 0.12:
+        if abs(error_angulo) < margen:
             v_lineal = 3.0
             v_angular = 0.0
-
-        elif abs(error_angulo) < 0.2:
-            v_lineal = 2.0
-            v_angular = 0.0
-
+            
         else:
             v_lineal = 0.0
             if error_angulo > 0:
                 v_angular = 0.5
             else:
                 v_angular = -0.5
-
-        # =========================
-        # FRENO CUANDO APROXIMADO   
-        #=========================
-
-        if distancia < self.umbral * 1.5:
-            v_lineal = min(v_lineal, 1.0)
-
 
         #tenemos que devolover la tupla con las velocidades que queremos que tome el robot. 
         return (v_lineal, v_angular)
