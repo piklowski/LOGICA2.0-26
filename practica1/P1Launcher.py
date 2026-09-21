@@ -175,7 +175,7 @@ while running:
             programQuit = True
 
     # fill the screen with a color to wipe away anything from last frame
-    screen.fill("blue")
+    screen.fill("white") #HE CAMBIADO DE COLOR A BLANCO PORQUE OJOS DUELEN.
 
     # RENDER YOUR GAME HERE
     for trajCont in range(len(objectiveSet)):
@@ -226,7 +226,7 @@ while not programQuit:
             programQuit = True
 
     # fill the screen with a color to wipe away anything from last frame
-    screen.fill("blue")
+    screen.fill("white")#HE CAMBIADO DE COLOR A BLANCO PORQUE OJOS DUELEN. estaba blue.
     for cont in range(len(objectiveSet)):
         path = objectiveSet[cont]
         drawObjective(path, False)
