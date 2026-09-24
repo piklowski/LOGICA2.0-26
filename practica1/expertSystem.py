@@ -40,7 +40,7 @@ class ExpertSystem:
             vector_medio= (medio[0]-punto_medio[0], medio[1]-punto_medio[1])
             distancia_medio = math.sqrt(vector_medio[0]**2 + vector_medio[1]**2) #distancia euclidea.
 
-            margen_seguridad = 0.8
+            margen_seguridad = 1 #por defecto 0.8
 
             #obtenemos la direccion exacta del punto medio normalizando el vector, y al multiplicarlo por el margen, creamos un nuevo vector que mide exactamente lo que mide margen de seguridad.
             punto_rodear = (medio[0]+(vector_medio[0]/distancia_medio)*margen_seguridad, medio[1]+(vector_medio[1]/distancia_medio)* margen_seguridad)
@@ -90,17 +90,16 @@ class ExpertSystem:
 
         if distancia < self.umbral:
             self.lista_puntos.pop(0)
-            return (0.0, 0.0) #POR AHORA RETURN PORQUE EL OBJETIVO ES QUE SE PARE. 
+            return (0.0, 0.0)
 
 
         #=========================
         #REGLAS DE CONTROL (VELOCIDADES). 
         #=========================
         
-        if abs(error_angulo) < 0.05:
+        if 0.05 < abs(error_angulo) < 0.1:
             v_lineal = 3.0
             v_angular=0.0
-            
 
         elif abs(error_angulo) < 0.15:
             v_lineal = 2.5
@@ -134,20 +133,12 @@ class ExpertSystem:
                 v_angular = -0.5
 
         #=========================
-        #FRENO CUANDO APROXIMADO   
+        #FRENO CUANDO APROXIMADO AL OBJETIVO. 
         #=========================
 
-        if distancia < self.umbral * 10:
-            v_lineal = min(v_lineal, 1.8)
-
-        if distancia < self.umbral * 7:
-            v_lineal = min(v_lineal, 1.2)
-
-        if distancia < self.umbral * 5:
-            v_lineal = min(v_lineal, 0.9)
-
-        if distancia < self.umbral * 2:
-            v_lineal = min(v_lineal, 0.2)
+        if distancia < self.umbral * 15:
+            v_lineal = min(v_lineal, 0.0)
+        
 
 
         #tenemos que devolover la tupla con las velocidades que queremos que tome el robot. 
