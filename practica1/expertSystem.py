@@ -9,7 +9,7 @@ class ExpertSystem:
         self.nombreAlumno = "Kacper Marcin Piklowski"
 
         #implementamos fase para saber en que fase del objetivo estamos y el umbral para saber si el objetivo esta alcanzado.
-        self.umbral = 0.2
+        self.umbral = 0.25
         self.cola_puntos=[]
 
 
@@ -40,7 +40,7 @@ class ExpertSystem:
             vector_medio= (medio[0]-punto_medio[0], medio[1]-punto_medio[1])
             distancia_medio = math.sqrt(vector_medio[0]**2 + vector_medio[1]**2) #distancia euclidea.
 
-            margen_seguridad = 0.5 #por defecto 0.8
+            margen_seguridad = 0.7 #por defecto 0.8
 
             #obtenemos la direccion exacta del punto medio normalizando el vector, y al multiplicarlo por el margen, creamos un nuevo vector que mide exactamente lo que mide margen de seguridad.
             punto_rodear = (medio[0]+(vector_medio[0]/distancia_medio)*margen_seguridad, medio[1]+(vector_medio[1]/distancia_medio)* margen_seguridad)
@@ -97,45 +97,55 @@ class ExpertSystem:
         #REGLAS DE CONTROL (VELOCIDADES). 
         #=========================
         
-        #definimos las constantes para mantener las proporciones de velocidades.
-        control_angular=2.0
-        control_lineal=1.5
+        if abs(error_angulo) < 0.05:
+            v_lineal = 3.0
+            v_angular = 0.0
 
-        #definimos la velocidades maximas.
-        limite_angular = 0.5
-        limite_lineal = 3.0
+        # 2. Desvío leve. Reducimos levemente el avance y corregimos suave.
+        elif abs(error_angulo) < 0.15:
+            v_lineal = 2.5
+            if error_angulo > 0:
+                v_angular = 0.1
+            else:
+                v_angular = -0.1
 
-        #calculamos la velocidad angular
-        v_angular=control_angular*error_angulo
-        v_lineal = control_lineal * distancia
-        
-        if v_lineal>limite_lineal:
-            v_lineal=limite_lineal
+        # 3. Desvío moderado.
+        elif abs(error_angulo) < 0.20:
+            v_lineal = 2.0
+            if error_angulo > 0:
+                v_angular = 0.15
+            else:
+                v_angular = -0.15
 
-        if v_angular > limite_angular:
-            v_angular=limite_angular
+        # 4. Desvío considerable. Avanzamos muy lento para dar prioridad al giro.
+        elif abs(error_angulo) < 0.25:
+            v_lineal = 0.5
+            if error_angulo > 0:
+                v_angular = 0.3
+            else:
+                v_angular = -0.3
 
-        elif v_angular < -limite_angular:
-            v_angular= -limite_angular
-
-        if abs(error_angulo) > 0.5: 
+        # 5. Totalmente desalineado. Nos detenemos por completo y pivotamos.
+        else:
             v_lineal = 0.0
+            if error_angulo > 0:
+                v_angular = 0.5
+            else:
+                v_angular = -0.5
 
         #=========================
         #FRENO CUANDO APROXIMADO AL OBJETIVO. 
         #=========================
 
         if distancia < self.umbral * 15:
-            v_lineal = min(v_lineal, 2.5)
-
-        if distancia < self.umbral * 10:
             v_lineal = min(v_lineal, 2.0)
-
-        if distancia < self.umbral * 5:
+            
+        if distancia < self.umbral * 7:
+            v_lineal = min(v_lineal, 1.0)
+            
+        if distancia < self.umbral * 3:
             v_lineal = min(v_lineal, 0.5)
-
-        if distancia < self.umbral:
-            v_lineal = min(v_lineal, 0.1)
+        
 
 
         #tenemos que devolover la tupla con las velocidades que queremos que tome el robot. 
