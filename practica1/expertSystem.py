@@ -1,4 +1,3 @@
-#ARCHIVO PARA TRABAJAR CON LA PRACTICA. 
 
 from objetivo import *
 import math
@@ -8,9 +7,8 @@ class ExpertSystem:
         self.objetivoActual = None
         self.nombreAlumno = "Kacper Marcin Piklowski"
 
-        #implementamos fase para saber en que fase del objetivo estamos y el umbral para saber si el objetivo esta alcanzado.
-        self.umbral = 0.25
-        self.cola_puntos=[]
+        self.umbral = 0.25 #implementamos umbral propio para estar mas preciso en cuando al acercarse a los objetivos. 
+        self.cola_puntos=[] #nos sirven para localizar el proximo objetivo. 
 
 
     #============================================================================
@@ -40,7 +38,7 @@ class ExpertSystem:
             vector_medio= (medio[0]-punto_medio[0], medio[1]-punto_medio[1])
             distancia_medio = math.sqrt(vector_medio[0]**2 + vector_medio[1]**2) #distancia euclidea.
 
-            margen_seguridad = 0.7 #por defecto 0.8
+            margen_seguridad = 0.6
 
             #obtenemos la direccion exacta del punto medio normalizando el vector, y al multiplicarlo por el margen, creamos un nuevo vector que mide exactamente lo que mide margen de seguridad.
             punto_rodear = (medio[0]+(vector_medio[0]/distancia_medio)*margen_seguridad, medio[1]+(vector_medio[1]/distancia_medio)* margen_seguridad)
@@ -76,7 +74,6 @@ class ExpertSystem:
 
         #calculamos el angulo de referencia porque es angulo deseado que debe tomar el robot para alcanzar el objetivo. Es la direccion de la linea recta que conecta el robot y su objetivo.
         angulo_referencia = math.atan2(vector_distancia[1], vector_distancia[0])
-            #usamos atan2 porque es una funcion matematica equivalente a arcotangente, pero calcula automaticamente en que cuadrante esta situado el objetivo y facilita situar el robot en la direccion correcta.
 
 
         #calculamos el la diferencia de angulos para que el robot sepa como girarse para alcanzar el objetivo.
@@ -97,35 +94,64 @@ class ExpertSystem:
         #REGLAS DE CONTROL (VELOCIDADES). 
         #=========================
         
-        if abs(error_angulo) < 0.05:
+        #el robot no esta desviado -> aumentamos velocidad lineal.
+        if abs(error_angulo) < 0.02:
             v_lineal = 3.0
             v_angular = 0.0
 
-        # 2. Desvío leve. Reducimos levemente el avance y corregimos suave.
-        elif abs(error_angulo) < 0.15:
-            v_lineal = 2.5
+        elif abs(error_angulo) < 0.08:
+            v_lineal = 1.7
             if error_angulo > 0:
                 v_angular = 0.1
             else:
                 v_angular = -0.1
 
-        # 3. Desvío moderado.
-        elif abs(error_angulo) < 0.20:
-            v_lineal = 2.0
+        #el robot esta un poco desviado -> reducimos velocidad lineal y aumentamos el giro.
+        elif abs(error_angulo) < 0.15:
+            v_lineal = 1.4
             if error_angulo > 0:
-                v_angular = 0.15
+                v_angular = 0.2
             else:
-                v_angular = -0.15
+                v_angular = -0.2
 
-        # 4. Desvío considerable. Avanzamos muy lento para dar prioridad al giro.
+        elif abs(error_angulo) < 0.19:
+            v_lineal = 1.2
+            if error_angulo > 0:
+                v_angular = 0.25
+            else:
+                v_angular = -0.25
+
         elif abs(error_angulo) < 0.25:
-            v_lineal = 0.5
+            v_lineal = 1.2
             if error_angulo > 0:
                 v_angular = 0.3
             else:
                 v_angular = -0.3
 
-        # 5. Totalmente desalineado. Nos detenemos por completo y pivotamos.
+        #el robot esta bastante desviado -> aplicamos lo anterior pero con mas fuerza.
+        elif abs(error_angulo) < 0.40:
+            v_lineal = 0.9
+            if error_angulo > 0:
+                v_angular = 0.4
+            else:
+                v_angular = -0.4
+
+        elif abs(error_angulo) < 0.60:
+            v_lineal = 0.5
+            if error_angulo > 0:
+                v_angular = 0.45
+            else:
+                v_angular = -0.45
+
+        #muy desviado.
+        elif abs(error_angulo) < 0.85:
+            v_lineal = 0.2
+            if error_angulo > 0:
+                v_angular = 0.48
+            else:
+                v_angular = -0.48
+
+        #completamente desviado.
         else:
             v_lineal = 0.0
             if error_angulo > 0:
@@ -137,14 +163,37 @@ class ExpertSystem:
         #FRENO CUANDO APROXIMADO AL OBJETIVO. 
         #=========================
 
-        if distancia < self.umbral * 15:
-            v_lineal = min(v_lineal, 2.0)
-            
-        if distancia < self.umbral * 7:
-            v_lineal = min(v_lineal, 1.0)
-            
-        if distancia < self.umbral * 3:
-            v_lineal = min(v_lineal, 0.5)
+        if distancia < self.umbral:
+            if v_lineal > 0.3:
+                v_lineal = 0.2
+
+        if distancia < self.umbral * 2:
+            if v_lineal > 0.3:
+                v_lineal = 0.3
+                
+        elif distancia < self.umbral * 5:
+            if v_lineal > 0.4:
+                v_lineal = 0.4
+
+        elif distancia < self.umbral * 7:
+            if v_lineal > 0.8:
+                v_lineal = 0.8
+                
+        elif distancia < self.umbral * 10:
+            if v_lineal > 1:
+                v_lineal = 1
+
+        elif distancia < self.umbral * 12:
+            if v_lineal > 1.2:
+                v_lineal = 1.2
+
+        elif distancia < self.umbral * 14:
+            if v_lineal > 1.5:
+                v_lineal = 1.5
+                
+        elif distancia < self.umbral * 16:
+            if v_lineal > 2.5:
+                v_lineal = 2.5
         
 
 
