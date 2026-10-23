@@ -1,4 +1,3 @@
-
 from objetivo import *
 import math
 
@@ -39,6 +38,7 @@ class ExpertSystem:
             distancia_medio = math.sqrt(vector_medio[0]**2 + vector_medio[1]**2) #distancia euclidea.
 
             margen_seguridad = 0.6
+            #margen_seguridad = 2
 
             #obtenemos la direccion exacta del punto medio normalizando el vector, y al multiplicarlo por el margen, creamos un nuevo vector que mide exactamente lo que mide margen de seguridad.
             punto_rodear = (medio[0]+(vector_medio[0]/distancia_medio)*margen_seguridad, medio[1]+(vector_medio[1]/distancia_medio)* margen_seguridad)
@@ -162,10 +162,6 @@ class ExpertSystem:
         #=========================
         #FRENO CUANDO APROXIMADO AL OBJETIVO. 
         #=========================
-
-        if distancia < self.umbral:
-            if v_lineal > 0.3:
-                v_lineal = 0.2
 
         if distancia < self.umbral * 2:
             if v_lineal > 0.3:
