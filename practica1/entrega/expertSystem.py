@@ -6,7 +6,7 @@ class ExpertSystem:
         self.objetivoActual = None
         self.nombreAlumno = "Kacper Marcin Piklowski"
 
-        self.umbral = 0.25 #implementamos umbral propio para estar mas preciso en cuando al acercarse a los objetivos. 
+        self.umbral = 0.4 #implementamos umbral propio para estar mas preciso en cuando al acercarse a los objetivos. 
         self.cola_puntos=[] #nos sirven para localizar el proximo objetivo. 
 
 
@@ -87,7 +87,9 @@ class ExpertSystem:
 
         if distancia < self.umbral:
             self.lista_puntos.pop(0)
-            return (0.0, 0.0)
+
+            if not self.lista_puntos:
+                return (0.0, 0.0)
 
 
         #=========================
@@ -99,100 +101,95 @@ class ExpertSystem:
             v_lineal = 3.0
             v_angular = 0.0
 
-        elif abs(error_angulo) < 0.08:
-            v_lineal = 1.7
+        elif abs(error_angulo) < 0.1:
+            v_lineal = 2.6
             if error_angulo > 0:
-                v_angular = 0.1
+                v_angular = 0.15
             else:
-                v_angular = -0.1
+                v_angular = -0.15
 
         #el robot esta un poco desviado -> reducimos velocidad lineal y aumentamos el giro.
         elif abs(error_angulo) < 0.15:
-            v_lineal = 1.4
+            v_lineal = 1.7
             if error_angulo > 0:
                 v_angular = 0.2
             else:
                 v_angular = -0.2
 
-        elif abs(error_angulo) < 0.19:
+        elif abs(error_angulo) < 0.2:
             v_lineal = 1.2
             if error_angulo > 0:
-                v_angular = 0.25
+                v_angular = 0.31
             else:
-                v_angular = -0.25
+                v_angular = -0.31
 
         elif abs(error_angulo) < 0.25:
-            v_lineal = 1.2
+            v_lineal = 0.9
             if error_angulo > 0:
-                v_angular = 0.3
+                v_angular = 0.44
             else:
-                v_angular = -0.3
+                v_angular = -0.44
 
         #el robot esta bastante desviado -> aplicamos lo anterior pero con mas fuerza.
         elif abs(error_angulo) < 0.40:
-            v_lineal = 0.9
+            v_lineal = 0.7
             if error_angulo > 0:
-                v_angular = 0.4
+                v_angular = 0.55
             else:
-                v_angular = -0.4
+                v_angular = -0.55
 
         elif abs(error_angulo) < 0.60:
             v_lineal = 0.5
             if error_angulo > 0:
-                v_angular = 0.45
+                v_angular = 0.7
             else:
-                v_angular = -0.45
+                v_angular = -0.7
 
         #muy desviado.
-        elif abs(error_angulo) < 0.85:
+        elif abs(error_angulo) < 0.85: 
             v_lineal = 0.2
             if error_angulo > 0:
-                v_angular = 0.48
+                v_angular = 0.8
             else:
-                v_angular = -0.48
+                v_angular = -0.8
 
         #completamente desviado.
         else:
             v_lineal = 0.0
             if error_angulo > 0:
-                v_angular = 0.5
+                v_angular = 0.9
             else:
-                v_angular = -0.5
+                v_angular = -0.9
 
         #=========================
         #FRENO CUANDO APROXIMADO AL OBJETIVO. 
         #=========================
 
-        if distancia < self.umbral * 2:
-            if v_lineal > 0.3:
-                v_lineal = 0.3
-                
-        elif distancia < self.umbral * 5:
-            if v_lineal > 0.4:
-                v_lineal = 0.4
+        if distancia < self.umbral * 3:
+            if v_lineal > 0.5:
+                v_lineal = 0.5
 
-        elif distancia < self.umbral * 7:
-            if v_lineal > 0.8:
-                v_lineal = 0.8
-                
-        elif distancia < self.umbral * 10:
+        elif distancia < self.umbral * 8:
             if v_lineal > 1:
                 v_lineal = 1
 
+        elif distancia < self.umbral * 10:
+            if v_lineal > 2:
+                v_lineal = 2
+
+        '''
         elif distancia < self.umbral * 12:
-            if v_lineal > 1.2:
-                v_lineal = 1.2
+            if v_lineal > 2:
+                v_lineal = 2
 
         elif distancia < self.umbral * 14:
-            if v_lineal > 1.5:
-                v_lineal = 1.5
-                
-        elif distancia < self.umbral * 16:
             if v_lineal > 2.5:
                 v_lineal = 2.5
-        
+        '''
 
 
         #tenemos que devolover la tupla con las velocidades que queremos que tome el robot. 
         return (v_lineal, v_angular)
         #return (1,0.5)
+
+        #expert20.
