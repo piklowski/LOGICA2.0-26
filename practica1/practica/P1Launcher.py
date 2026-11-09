@@ -20,7 +20,7 @@ AppTitle = "RRDC P1 2026"
 RADIUS = 8 # Radio de dibujo para los puntos objetivo
 
 #Cambiar a True para usar el sistema experto difuso
-useFuzzySystem = True
+useFuzzySystem = False
 
 
 # pygame setup
@@ -129,7 +129,7 @@ def getTriangleScore(triangulo, posiciones, tiempo=1):
 
 miRobot = Robot()
 
-with open('recorrido1.json', 'r') as file:
+with open('recorrido2.json', 'r') as file:
     datos = json.load(file)
 
 objectiveSet = []

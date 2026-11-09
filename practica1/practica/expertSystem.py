@@ -177,19 +177,6 @@ class ExpertSystem:
             if v_lineal > 2:
                 v_lineal = 2
 
-        '''
-        elif distancia < self.umbral * 12:
-            if v_lineal > 2:
-                v_lineal = 2
-
-        elif distancia < self.umbral * 14:
-            if v_lineal > 2.5:
-                v_lineal = 2.5
-        '''
-
 
         #tenemos que devolover la tupla con las velocidades que queremos que tome el robot. 
         return (v_lineal, v_angular)
-        #return (1,0.5)
-
-        #expert20.
